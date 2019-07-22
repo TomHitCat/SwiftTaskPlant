@@ -8,15 +8,17 @@
 
 import UIKit
 
-class SWSuperviser<T>: SWSuperviserable {
-    typealias Product = T
+class SWSuperviser<T> {
+    typealias ProductReportType = (T) -> Void
+    typealias ErrorReportType = (Error) -> Void
+    typealias CompleteReportType = () -> Void
+    typealias ProgressReportType = (Double) -> Void
     
     private var productReport: ProductReportType?
     private var errorReport: ErrorReportType?
     private var progressReport: ProgressReportType?
     private var completeReport: CompleteReportType?
-    private var task: SWTask<T>?
-    private var worker: SWWorker<T>?
+    private let task: SWTask<T>
     
     init(task: SWTask<T>) {
         self.task = task
@@ -26,7 +28,7 @@ class SWSuperviser<T>: SWSuperviserable {
         self.task = SWTask.init(task: task)
     }
     
-    func feedback(_ event: SWEvent<T>) {
+    fileprivate func feedback(_ event: SWEvent<T>) {
         switch event {
         case .produce(let product):
             performProductReport(product)
@@ -37,6 +39,22 @@ class SWSuperviser<T>: SWSuperviserable {
         case .progress(let progress):
             performProgressReport(progress)
         }
+    }
+    
+    fileprivate func performProductReport(_ product: T) {
+        self.productReport?(product)
+    }
+    
+    fileprivate func performErrorReport(_ error: Error) {
+        self.errorReport?(error)
+    }
+    
+    fileprivate func performCompleteReport() {
+        self.completeReport?()
+    }
+    
+    fileprivate func performProgressReport(_ progress: Double) {
+        self.progressReport?(progress)
     }
     
     func fbProduct(_ report: @escaping (T) -> Void) -> Self {
@@ -59,24 +77,8 @@ class SWSuperviser<T>: SWSuperviserable {
         return self
     }
     
-    private func performProductReport(_ product: T) {
-        self.productReport?(product)
-    }
-    
-    private func performErrorReport(_ error: Error) {
-        self.errorReport?(error)
-    }
-    
-    private func performCompleteReport() {
-        self.completeReport?()
-    }
-    
-    private func performProgressReport(_ progress: Double) {
-        self.progressReport?(progress)
-    }
-    
     func distribute() -> Void {
-        guard let taskNONNIL = self.task else { return }
-        self.perform(worker: SWWorker<T>.init(), task: taskNONNIL)
+        let worker: SWWorker<T> = SWWorker.init(self, self.task)
+        self.perform(worker: worker, task: self.task)
     }
 }
