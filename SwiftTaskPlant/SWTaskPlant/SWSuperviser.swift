@@ -9,10 +9,10 @@
 import UIKit
 
 class SWSuperviser<T> {
-    typealias ProductReportType = (T) -> Void
-    typealias ErrorReportType = (Error) -> Void
-    typealias CompleteReportType = () -> Void
-    typealias ProgressReportType = (Double) -> Void
+    typealias ProductReportType = (SWTask<T>, T) -> Void
+    typealias ErrorReportType = (SWTask<T>, Error) -> Void
+    typealias CompleteReportType = (SWTask<T>) -> Void
+    typealias ProgressReportType = (SWTask<T>, Double) -> Void
     
     private var productReport: ProductReportType?
     private var errorReport: ErrorReportType?
@@ -28,51 +28,51 @@ class SWSuperviser<T> {
         self.task = SWTask.init(task: task)
     }
     
-    fileprivate func feedback(_ event: SWEvent<T>) {
+    func feedback(_ task: SWTask<T>, _ event: SWEvent<T>) {
         switch event {
         case .produce(let product):
-            performProductReport(product)
+            performProductReport(task, product)
         case .error(let error):
-            performErrorReport(error)
+            performErrorReport(task, error)
         case .complete:
-            performCompleteReport()
+            performCompleteReport(task)
         case .progress(let progress):
-            performProgressReport(progress)
+            performProgressReport(task, progress)
         }
     }
     
-    fileprivate func performProductReport(_ product: T) {
-        self.productReport?(product)
+    fileprivate func performProductReport(_ task: SWTask<T>, _ product: T) {
+        self.productReport?(task, product)
     }
     
-    fileprivate func performErrorReport(_ error: Error) {
-        self.errorReport?(error)
+    fileprivate func performErrorReport(_ task: SWTask<T>, _ error: Error) {
+        self.errorReport?(task, error)
     }
     
-    fileprivate func performCompleteReport() {
-        self.completeReport?()
+    fileprivate func performCompleteReport(_ task: SWTask<T>) {
+        self.completeReport?(task)
     }
     
-    fileprivate func performProgressReport(_ progress: Double) {
-        self.progressReport?(progress)
+    fileprivate func performProgressReport(_ task: SWTask<T>, _ progress: Double) {
+        self.progressReport?(task, progress)
     }
     
-    func fbProduct(_ report: @escaping (T) -> Void) -> Self {
+    func fbProduct(_ report: @escaping (_ task: SWTask<T>, T) -> Void) -> Self {
         self.productReport = report
         return self
     }
     
-    func fbError(_ report: @escaping (Error) -> Void) -> Self {
+    func fbError(_ report: @escaping (_ task: SWTask<T>, Error) -> Void) -> Self {
         self.errorReport = report
         return self
     }
     
-    func fbComplete(_ report: @escaping () -> Void) -> Self {
+    func fbComplete(_ report: @escaping (_ task: SWTask<T>) -> Void) -> Self {
         self.completeReport = report
         return self
     }
     
-    func fbProgress(_ report: @escaping (Double) -> Void) -> Self {
+    func fbProgress(_ report: @escaping (_ task: SWTask<T>, Double) -> Void) -> Self {
         self.progressReport = report
         return self
     }

@@ -44,6 +44,16 @@ enum SWTaskPhase: Int32 {
         return self.checkPhasesToProcess(phase, .SWTaskAbort)
     }
     
+    static func isComplete(_ phase: AtomicInt32) -> Bool {
+        let current = load(phase)
+        return current == self.SWTaskComplete.rawValue
+    }
+    
+    static func isError(_ phase: AtomicInt32) -> Bool {
+        let current = load(phase)
+        return current == self.SWTaskAbort.rawValue
+    }
+    
     static func isFinish(_ phase: AtomicInt32) -> Bool {
         let current = load(phase)
         return current == self.SWTaskComplete.rawValue || current == self.SWTaskAbort.rawValue

@@ -22,6 +22,12 @@
 		8B48073D22E1AF8300E06E2B /* SWSuperviser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B48073C22E1AF8300E06E2B /* SWSuperviser.swift */; };
 		8B48073F22E1BB9500E06E2B /* SWTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B48073E22E1BB9500E06E2B /* SWTask.swift */; };
 		8B6472EA22E588E900233C9A /* SWTaskPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6472E922E588E900233C9A /* SWTaskPhase.swift */; };
+		8B6472EC22E6A8BD00233C9A /* SWWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6472EB22E6A8BD00233C9A /* SWWorker.swift */; };
+		8B6472EE22E6A96C00233C9A /* SWTaskOnce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6472ED22E6A96C00233C9A /* SWTaskOnce.swift */; };
+		8B6472F222E838C300233C9A /* SWTaskRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6472F122E838C300233C9A /* SWTaskRange.swift */; };
+		8B6472F622E8505000233C9A /* SWTaskCradle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6472F522E8505000233C9A /* SWTaskCradle.swift */; };
+		8B6472FA22E8682600233C9A /* SWTaskEmpty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6472F922E8682600233C9A /* SWTaskEmpty.swift */; };
+		8B6472FC22E86A2900233C9A /* SWTaskPrefix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6472FB22E86A2900233C9A /* SWTaskPrefix.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +60,12 @@
 		8B48073C22E1AF8300E06E2B /* SWSuperviser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWSuperviser.swift; sourceTree = "<group>"; };
 		8B48073E22E1BB9500E06E2B /* SWTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWTask.swift; sourceTree = "<group>"; };
 		8B6472E922E588E900233C9A /* SWTaskPhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWTaskPhase.swift; sourceTree = "<group>"; };
+		8B6472EB22E6A8BD00233C9A /* SWWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWWorker.swift; sourceTree = "<group>"; };
+		8B6472ED22E6A96C00233C9A /* SWTaskOnce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWTaskOnce.swift; sourceTree = "<group>"; };
+		8B6472F122E838C300233C9A /* SWTaskRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWTaskRange.swift; sourceTree = "<group>"; };
+		8B6472F522E8505000233C9A /* SWTaskCradle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWTaskCradle.swift; sourceTree = "<group>"; };
+		8B6472F922E8682600233C9A /* SWTaskEmpty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWTaskEmpty.swift; sourceTree = "<group>"; };
+		8B6472FB22E86A2900233C9A /* SWTaskPrefix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SWTaskPrefix.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,7 +124,13 @@
 				8B48071D22DF0F2100E06E2B /* SWFuture.swift */,
 				8B48073022E02E4B00E06E2B /* SWRingQueue.swift */,
 				8B48073E22E1BB9500E06E2B /* SWTask.swift */,
+				8B6472F922E8682600233C9A /* SWTaskEmpty.swift */,
+				8B6472ED22E6A96C00233C9A /* SWTaskOnce.swift */,
+				8B6472F122E838C300233C9A /* SWTaskRange.swift */,
+				8B6472FB22E86A2900233C9A /* SWTaskPrefix.swift */,
+				8B6472F522E8505000233C9A /* SWTaskCradle.swift */,
 				8B48073622E19B9F00E06E2B /* SWWorkerable.swift */,
+				8B6472EB22E6A8BD00233C9A /* SWWorker.swift */,
 				8B48073C22E1AF8300E06E2B /* SWSuperviser.swift */,
 				8B48071F22DF10C200E06E2B /* SWUtilAtomic.swift */,
 				8B48073822E19FEC00E06E2B /* SWEvent.swift */,
@@ -232,12 +250,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B6472F222E838C300233C9A /* SWTaskRange.swift in Sources */,
+				8B6472EE22E6A96C00233C9A /* SWTaskOnce.swift in Sources */,
+				8B6472EC22E6A8BD00233C9A /* SWWorker.swift in Sources */,
 				8B48073122E02E4B00E06E2B /* SWRingQueue.swift in Sources */,
+				8B6472F622E8505000233C9A /* SWTaskCradle.swift in Sources */,
 				8B48071E22DF0F2100E06E2B /* SWFuture.swift in Sources */,
 				8B6472EA22E588E900233C9A /* SWTaskPhase.swift in Sources */,
 				8B48070D22DF0EA700E06E2B /* ViewController.swift in Sources */,
+				8B6472FC22E86A2900233C9A /* SWTaskPrefix.swift in Sources */,
 				8B48072022DF10C200E06E2B /* SWUtilAtomic.swift in Sources */,
 				8B48073922E19FEC00E06E2B /* SWEvent.swift in Sources */,
+				8B6472FA22E8682600233C9A /* SWTaskEmpty.swift in Sources */,
 				8B48073722E19B9F00E06E2B /* SWWorkerable.swift in Sources */,
 				8B48073D22E1AF8300E06E2B /* SWSuperviser.swift in Sources */,
 				8B48070B22DF0EA700E06E2B /* AppDelegate.swift in Sources */,

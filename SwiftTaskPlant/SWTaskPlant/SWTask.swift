@@ -11,102 +11,77 @@ import UIKit
 
 class SWTask<T> {
     
-    typealias SWTasket = (SWWorker<Product>) -> Void
+    typealias SWTasket = (SWWorker<T>) -> Void
     
-    typealias Product = T
+    typealias SWTaskFilteret = (T) -> Bool
     
-    fileprivate let task: SWTasket
+    let task: SWTasket
     
-    private var product: [T] = []
+    var progress: Double { return _progress }
+    
+    private var _progress: Double = 0
+    
+    private var lock: NSLock = NSLock()
     
     private var error: Error?
 
     private var schedule: Double = 0
     
-    private var phase: AtomicInt32 = AtomicInt32.init(value: SWTaskPhase.SWTaskCreated.rawValue)
+    private var filter: SWTaskFilteret?
     
-    fileprivate func onExecute() -> Bool {
-        if SWTaskPhase.toExecution(self.phase) {
-            return true
-        }
-        assert(false, "SWTask cannot invoke onExecute() when the task is executing or finished!")
-        return false
-    }
+    private var phase: AtomicInt32 = AtomicInt32.init(value: SWTaskPhase.SWTaskCreated.rawValue)
     
     required init(task: @escaping SWTasket) { self.task = task }
     
-    fileprivate func onSchedule(_ schedule: Double) -> Bool {
-        if SWTaskPhase.isExecuting(self.phase) {
-            self.schedule = schedule
-            return true
-        }
-        assert(false, "SWTask cannot invoke onSchedule(_:) when the task is not execute or finished!")
+    func onComplete() -> Bool {
+        if SWTaskPhase.toComplete(self.phase) { return true }
         return false
     }
     
-    fileprivate func onResult(_ result: T) -> Bool {
-        if SWTaskPhase.isExecuting(self.phase) {
-            self.product.append(result)
-            return true
-        }
-        assert(false, "SWTask cannot invoke onResult(_:) when the task is not execute or finished!")
+    func onError(_ error: Error) -> Bool {
+        if SWTaskPhase.toError(self.phase) { self.error = error; return true }
         return false
     }
     
-    fileprivate func onComplete() -> Bool {
-        if SWTaskPhase.toComplete(self.phase) {
-            return true
-        }
-        assert(false, "SWTask cannot invoke onResult(_:) when the task is not execute or finished!")
+    func onProduce(_ product: T) -> Bool { return false }
+    
+    func onProgress(_ progress: Double) -> Bool { _progress = progress; return false }
+    
+    final func isExecuting() -> Bool { return SWTaskPhase.isExecuting(self.phase) }
+    
+    final func isComplete() -> Bool { return SWTaskPhase.isFinish(self.phase) }
+    
+    final func isFinish() -> Bool { return SWTaskPhase.isFinish(self.phase) }
+    
+    final func filter(_ f: @escaping SWTaskFilteret) -> Self { self.filter = f; return self }
+    
+    final func canFillFilter(_ product: T) -> Bool {
+        return self.filter?(product) ?? true
+    }
+    
+    final func onExecute() -> Bool {
+        if SWTaskPhase.toExecution(self.phase) { return true }
         return false
     }
     
-    fileprivate func onError(_ error: Error) -> Bool {
-        if SWTaskPhase.toError(phase) {
-            self.error = error
-            return true
-        }
-        assert(false, "SWTask cannot invoke onError(_:) when the task is not execute or finished!")
-        return false
+    final func synchronized<S>(block: () -> S?) -> S? {
+        var result: S?
+        lock.lock()
+        result = block()
+        lock.unlock()
+        return result
     }
+    
+    
+    
 }
 
 extension SWSuperviser {
+    
     func perform(worker: SWWorker<T>, task: SWTask<T>) {
         worker.doTask(task)
     }
+    
 }
 
-class SWWorker<T>: SWWorkarable {
-    
-    typealias Product = T
-    
-    private unowned var task: SWTask<T>
-    
-    private var supervisor: SWSuperviser<T>
-    
-    init(_ supervisor: SWSuperviser<T> , _ task: SWTask<T>) {
-        self.task = task
-        self.supervisor = supervisor
-    }
-    
-    fileprivate func doTask(_ task: SWTask<T>) {
-        if task.onExecute() {
-            task.task(self)
-        }
-    }
-    
-    func submit(_ event: SWEvent<T>) {
-        switch event {
-        case .complete:
-            _ = self.task.onComplete()
-        case .produce(let product):
-            _ = self.task.onResult(product)
-        case .error(let err):
-            _ = self.task.onError(err)
-        case .progress(let progress):
-            _ = self.task.onSchedule(progress)
-        }
-    }
-}
 
